@@ -5,9 +5,10 @@
   </button>
 
   <form
+    *ngIf="showForm"
     (ngSubmit)="saveBeneficiar()"
     novalidate
-    class="needs-validation was-validated hidden"
+    class="needs-validation was-validated"
   >
     <div class="mb-1.5">
       <label for="tip" class="form-label">Tip Beneficiar:</label>

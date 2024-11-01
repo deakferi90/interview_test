@@ -91,10 +91,10 @@ export class BeneficiariComponent implements OnInit {
   }
 
   updateBeneficiar(beneficiar: Beneficiar) {
+    this.showForm = true;
     this.newBeneficiar = { ...beneficiar };
     this.isEditing = true;
     this.currentBeneficiarId = beneficiar.id!;
-    this.showForm = true;
   }
 
   updateBeneficiarInList() {
@@ -106,6 +106,7 @@ export class BeneficiariComponent implements OnInit {
     }
     this.updateFilteredList();
     this.isEditing = false;
+    this.showForm = true;
     this.currentBeneficiarId = null;
   }
 
@@ -188,6 +189,7 @@ export class BeneficiariComponent implements OnInit {
     this.isEditing = false;
     this.currentBeneficiarId = null;
     this.updateFilteredList();
+    this.showForm = false;
   }
 
   updateFilteredList() {
