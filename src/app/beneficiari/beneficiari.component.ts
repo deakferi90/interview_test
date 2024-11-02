@@ -216,15 +216,15 @@ export class BeneficiariComponent implements OnInit {
     this.currentBeneficiarId = null;
     this.updateFilteredList();
     this.showForm = false;
-    this.isSubmitted = false; // Reset submission state here
+    this.isSubmitted = false;
   }
 
   addForm() {
     this.showForm = !this.showForm;
     if (!this.showForm) {
-      this.resetForm(); // Reset the form when hiding it
+      this.resetForm();
     } else {
-      this.isSubmitted = false; // Reset submission state when showing the form
+      this.isSubmitted = false;
     }
   }
 }
