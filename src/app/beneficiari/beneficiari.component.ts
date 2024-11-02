@@ -184,14 +184,6 @@ export class BeneficiariComponent implements OnInit {
     return areFieldsValid && isIBANValid && isCUIValid && isCNPValid;
   }
 
-  resetForm() {
-    this.newBeneficiar = this.initializeNewBeneficiar();
-    this.isEditing = false;
-    this.currentBeneficiarId = null;
-    this.updateFilteredList();
-    this.showForm = false;
-  }
-
   updateFilteredList() {
     this.filteredBeneficiari = [...this.beneficiari];
   }
@@ -218,9 +210,21 @@ export class BeneficiariComponent implements OnInit {
     });
   }
 
+  resetForm() {
+    this.newBeneficiar = this.initializeNewBeneficiar();
+    this.isEditing = false;
+    this.currentBeneficiarId = null;
+    this.updateFilteredList();
+    this.showForm = false;
+    this.isSubmitted = false; // Reset submission state here
+  }
+
   addForm() {
     this.showForm = !this.showForm;
-    let val = document.querySelector('.needs-validation ');
-    val?.classList.toggle('hidden');
+    if (!this.showForm) {
+      this.resetForm(); // Reset the form when hiding it
+    } else {
+      this.isSubmitted = false; // Reset submission state when showing the form
+    }
   }
 }
