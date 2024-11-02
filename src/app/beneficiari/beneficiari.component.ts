@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BeneficiarService } from '../service/beneficiari.service';
 
 @Component({
   selector: 'app-beneficiari',
@@ -24,7 +25,10 @@ export class BeneficiariComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = 'asc';
   showForm = false;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    private beneficiarService: BeneficiarService
+  ) {}
 
   ngOnInit(): void {
     this.loadBeneficiari();
@@ -50,6 +54,28 @@ export class BeneficiariComponent implements OnInit {
     };
   }
 
+  sortTable(column: keyof Beneficiar) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortDirection = 'asc';
+    }
+    this.sortColumn = column;
+
+    this.filteredBeneficiari.sort((a, b) => {
+      const valueA = a[column] || '';
+      const valueB = b[column] || '';
+
+      const comparison = valueA
+        .toString()
+        .localeCompare(valueB.toString(), undefined, {
+          numeric: true,
+        });
+
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
   filterBeneficiari(event: KeyboardEvent) {
     const target = event.target as HTMLInputElement;
     const filterValue = target.value.toLowerCase();
@@ -68,61 +94,37 @@ export class BeneficiariComponent implements OnInit {
   }
 
   loadBeneficiari() {
-    if (typeof window !== 'undefined') {
-      const data = localStorage.getItem('beneficiari');
-      this.beneficiari = data ? JSON.parse(data) : [];
-      this.filteredBeneficiari = [...this.beneficiari];
-    }
+    this.beneficiari = this.beneficiarService.loadBeneficiari();
+    this.filteredBeneficiari = [...this.beneficiari];
   }
 
-  saveBeneficiar() {
-    this.isSubmitted = true;
-    if (this.validateBeneficiar(this.newBeneficiar)) {
-      if (this.isEditing && this.currentBeneficiarId !== null) {
-        this.updateBeneficiarInList();
-      } else {
-        this.newBeneficiar.id = Date.now();
-        this.beneficiari.push({ ...this.newBeneficiar });
-      }
-      localStorage.setItem('beneficiari', JSON.stringify(this.beneficiari));
-      this.updateFilteredList();
-      this.resetForm();
-    }
+  updateFilteredList() {
+    this.filteredBeneficiari = [...this.beneficiari];
   }
 
-  updateBeneficiar(beneficiar: Beneficiar) {
-    this.showForm = true;
-    this.newBeneficiar = { ...beneficiar };
-    this.isEditing = true;
-    this.currentBeneficiarId = beneficiar.id!;
-  }
+  validateBeneficiar(beneficiar: Beneficiar): boolean {
+    const isIBANValid = this.validateIBAN(beneficiar.conturiIBAN || '');
+    const isCUIValid =
+      beneficiar.tip === 'persoana_juridica'
+        ? this.validateCUI(beneficiar.cui || '')
+        : true;
+    const isCNPValid =
+      beneficiar.tip === 'persoana_fizica'
+        ? this.validateCNP(beneficiar.cnp || '')
+        : true;
 
-  updateBeneficiarInList() {
-    const index = this.beneficiari.findIndex(
-      (b) => b.id === this.currentBeneficiarId
-    );
-    if (index !== -1) {
-      this.beneficiari[index] = { ...this.newBeneficiar };
-    }
-    this.updateFilteredList();
-    this.isEditing = false;
-    this.showForm = true;
-    this.currentBeneficiarId = null;
-  }
-
-  deleteConfirm(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      height: '200px',
-      panelClass: 'centered-dialog',
+    const mandatoryFields: (keyof Beneficiar)[] =
+      beneficiar.tip === 'persoana_juridica'
+        ? ['cui', 'conturiIBAN']
+        : ['cnp', 'conturiIBAN'];
+    const areFieldsValid = mandatoryFields.every((field) => {
+      const value = beneficiar[field];
+      return (
+        typeof value === 'string' && value.length > 0 && value.length <= 100
+      );
     });
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.beneficiari = this.beneficiari.filter((b) => b.id !== id);
-        localStorage.setItem('beneficiari', JSON.stringify(this.beneficiari));
-        this.updateFilteredList();
-      }
-    });
+
+    return areFieldsValid && isIBANValid && isCUIValid && isCNPValid;
   }
 
   validateIBAN(iban: string): boolean {
@@ -159,54 +161,49 @@ export class BeneficiariComponent implements OnInit {
     return cnpPattern.test(cnp);
   }
 
-  validateBeneficiar(beneficiar: Beneficiar): boolean {
-    const isIBANValid = this.validateIBAN(beneficiar.conturiIBAN || '');
-    const isCUIValid =
-      beneficiar.tip === 'persoana_juridica'
-        ? this.validateCUI(beneficiar.cui || '')
-        : true;
-    const isCNPValid =
-      beneficiar.tip === 'persoana_fizica'
-        ? this.validateCNP(beneficiar.cnp || '')
-        : true;
-
-    const mandatoryFields: (keyof Beneficiar)[] =
-      beneficiar.tip === 'persoana_juridica'
-        ? ['cui', 'conturiIBAN']
-        : ['cnp', 'conturiIBAN'];
-    const areFieldsValid = mandatoryFields.every((field) => {
-      const value = beneficiar[field];
-      return (
-        typeof value === 'string' && value.length > 0 && value.length <= 100
-      );
-    });
-
-    return areFieldsValid && isIBANValid && isCUIValid && isCNPValid;
-  }
-
-  updateFilteredList() {
-    this.filteredBeneficiari = [...this.beneficiari];
-  }
-
-  sortTable(column: keyof Beneficiar) {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortDirection = 'asc';
+  saveBeneficiar() {
+    this.isSubmitted = true;
+    if (this.validateBeneficiar(this.newBeneficiar)) {
+      if (this.isEditing && this.currentBeneficiarId !== null) {
+        this.updateBeneficiarInList();
+      } else {
+        this.newBeneficiar.id = Date.now();
+        this.beneficiarService.addBeneficiar({ ...this.newBeneficiar });
+      }
+      this.loadBeneficiari();
+      this.resetForm();
     }
-    this.sortColumn = column;
+  }
 
-    this.filteredBeneficiari.sort((a, b) => {
-      const valueA = a[column] || '';
-      const valueB = b[column] || '';
+  updateBeneficiar(beneficiar: Beneficiar) {
+    this.showForm = true;
+    this.newBeneficiar = { ...beneficiar };
+    this.isEditing = true;
+    this.currentBeneficiarId = beneficiar.id!;
+  }
 
-      const comparison = valueA
-        .toString()
-        .localeCompare(valueB.toString(), undefined, {
-          numeric: true,
-        });
+  updateBeneficiarInList() {
+    if (this.currentBeneficiarId !== null) {
+      this.beneficiarService.updateBeneficiar({
+        ...this.newBeneficiar,
+        id: this.currentBeneficiarId,
+      });
+      this.loadBeneficiari();
+    }
+    this.resetForm();
+  }
 
-      return this.sortDirection === 'asc' ? comparison : -comparison;
+  deleteConfirm(id: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      height: '200px',
+      panelClass: 'centered-dialog',
+    });
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.beneficiarService.deleteBeneficiar(id);
+        this.loadBeneficiari();
+      }
     });
   }
 

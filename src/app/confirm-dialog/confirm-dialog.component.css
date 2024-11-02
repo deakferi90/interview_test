@@ -4,10 +4,9 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px; /* Adds padding inside the dialog */
+  padding: 24px;
 }
 
-/* Dialog title styling */
 h2 {
   font-weight: bold;
   font-size: 20px;
@@ -15,7 +14,6 @@ h2 {
   color: #333;
 }
 
-/* Dialog content styling */
 mat-dialog-content {
   font-size: 16px;
   color: #555;
@@ -23,17 +21,15 @@ mat-dialog-content {
   padding: 0 24px;
 }
 
-/* Center buttons horizontally */
 mat-dialog-actions {
   display: flex;
-  justify-content: center; /* Centers the buttons horizontally */
+  justify-content: center;
   width: 100%;
 }
 
-/* Style buttons */
 button {
   min-width: 80px;
-  margin: 0 8px; /* Adds space between buttons */
+  margin: 0 8px;
 }
 
 button[mat-button] {
