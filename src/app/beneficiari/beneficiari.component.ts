@@ -168,11 +168,11 @@ export class BeneficiariComponent implements OnInit {
     if (this.validateBeneficiar(this.newBeneficiar)) {
       if (this.isEditing && this.currentBeneficiarId !== null) {
         this.updateBeneficiarInList();
-        this.toastr.success('Successfully updated Beneficiar!');
+        this.toastr.success('Beneficiar actualizat cu succes!');
       } else {
         this.newBeneficiar.id = Date.now();
         this.beneficiarService.addBeneficiar({ ...this.newBeneficiar });
-        this.toastr.success('Successfully added Beneficiar!');
+        this.toastr.success('Beneficiar adăugat cu succes!');
       }
       this.loadBeneficiari();
       this.resetForm();
@@ -207,6 +207,7 @@ export class BeneficiariComponent implements OnInit {
       if (confirmed) {
         this.beneficiarService.deleteBeneficiar(id);
         this.loadBeneficiari();
+        this.toastr.success('Beneficiar șters cu succes!');
       }
     });
   }
