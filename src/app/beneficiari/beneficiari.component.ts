@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BeneficiarService } from '../service/beneficiari.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-beneficiari',
@@ -27,7 +28,8 @@ export class BeneficiariComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private beneficiarService: BeneficiarService
+    private beneficiarService: BeneficiarService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -166,9 +168,11 @@ export class BeneficiariComponent implements OnInit {
     if (this.validateBeneficiar(this.newBeneficiar)) {
       if (this.isEditing && this.currentBeneficiarId !== null) {
         this.updateBeneficiarInList();
+        this.toastr.success('Successfully updated Beneficiar!');
       } else {
         this.newBeneficiar.id = Date.now();
         this.beneficiarService.addBeneficiar({ ...this.newBeneficiar });
+        this.toastr.success('Successfully added Beneficiar!');
       }
       this.loadBeneficiari();
       this.resetForm();
