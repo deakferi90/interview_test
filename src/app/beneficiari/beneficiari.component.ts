@@ -194,7 +194,6 @@ export class BeneficiariComponent implements OnInit {
       });
       this.loadBeneficiari();
     }
-    this.resetForm();
   }
 
   deleteConfirm(id: number) {
@@ -207,6 +206,7 @@ export class BeneficiariComponent implements OnInit {
       if (confirmed) {
         this.beneficiarService.deleteBeneficiar(id);
         this.loadBeneficiari();
+        this.resetForm();
         this.toastr.success('Beneficiar șters cu succes!');
       }
     });
