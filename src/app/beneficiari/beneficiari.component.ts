@@ -2,17 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { Beneficiar } from './beneficiar.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BeneficiarService } from '../service/beneficiari.service';
 import { ToastrService } from 'ngx-toastr';
+import { BeneficiarTableComponent } from './beneficiar-table/beneficiar-table.component';
 
 @Component({
   selector: 'app-beneficiari',
   standalone: true,
   templateUrl: './beneficiari.component.html',
   styleUrls: ['./beneficiari.component.scss'],
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, MatDialogModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    BeneficiarTableComponent,
+  ],
 })
 export class BeneficiariComponent implements OnInit {
   beneficiari: Beneficiar[] = [];
@@ -194,22 +200,6 @@ export class BeneficiariComponent implements OnInit {
       });
       this.loadBeneficiari();
     }
-  }
-
-  deleteConfirm(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      height: '200px',
-      panelClass: 'centered-dialog',
-    });
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.beneficiarService.deleteBeneficiar(id);
-        this.loadBeneficiari();
-        this.resetForm();
-        this.toastr.success('Beneficiar șters cu succes!');
-      }
-    });
   }
 
   resetForm() {

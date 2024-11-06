@@ -198,153 +198,18 @@
     placeholder="Caută după nume, prenume sau denumire..."
     (keyup)="filterBeneficiari($event)"
   />
-  <table class="table table-hover table-bordered mt-3">
-    <thead class="table-primary">
-      <tr>
-        <th (click)="sortTable('tip')" class="text-center">
-          <div class="d-flex justify-content-center align-items-center">
-            <span class="me-1">Tip</span>
-            <div class="d-flex align-items-center">
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'tip' && sortDirection === 'asc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="currentColor" d="M7 14l5-5 5 5z" />
-              </svg>
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'tip' && sortDirection === 'desc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                class="ms-1"
-              >
-                <path fill="currentColor" d="M7 10l5 5 5-5z" />
-              </svg>
-            </div>
-          </div>
-        </th>
-        <th (click)="sortTable('nume')" class="text-center">
-          <div class="d-flex justify-content-center align-items-center">
-            <span class="me-1">Prenume</span>
-            <div class="d-flex align-items-center">
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'nume' && sortDirection === 'asc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="currentColor" d="M7 14l5-5 5 5z" />
-              </svg>
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'nume' && sortDirection === 'desc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                class="ms-1"
-              >
-                <path fill="currentColor" d="M7 10l5 5 5-5z" />
-              </svg>
-            </div>
-          </div>
-        </th>
-        <th (click)="sortTable('prenume')" class="text-center">
-          <div class="d-flex justify-content-center align-items-center">
-            <span class="me-1">Nume</span>
-            <div class="d-flex align-items-center">
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'prenume' && sortDirection === 'asc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="currentColor" d="M7 14l5-5 5 5z" />
-              </svg>
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'prenume' && sortDirection === 'desc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                class="ms-1"
-              >
-                <path fill="currentColor" d="M7 10l5 5 5-5z" />
-              </svg>
-            </div>
-          </div>
-        </th>
-        <th (click)="sortTable('denumire')" class="text-center">
-          <div class="d-flex justify-content-center align-items-center">
-            <span class="me-1">Denumire</span>
-            <div class="d-flex align-items-center">
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'denumire' && sortDirection === 'asc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="currentColor" d="M7 14l5-5 5 5z" />
-              </svg>
-              <svg
-                [ngClass]="{
-                  active: sortColumn === 'denumire' && sortDirection === 'desc'
-                }"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                class="ms-1"
-              >
-                <path fill="currentColor" d="M7 10l5 5 5-5z" />
-              </svg>
-            </div>
-          </div>
-        </th>
-        <th>CUI</th>
-        <th>Conturi IBAN</th>
-        <th>CNP</th>
-        <th>Telefon</th>
-        <th>Acțiuni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let beneficiar of filteredBeneficiari">
-        <td>{{ beneficiar.tip }}</td>
-        <td>{{ beneficiar.nume }}</td>
-        <td>{{ beneficiar.prenume }}</td>
-        <td>{{ beneficiar.denumire }}</td>
-        <td>{{ beneficiar.cui }}</td>
-        <td>{{ beneficiar.conturiIBAN }}</td>
-        <td>{{ beneficiar.cnp }}</td>
-        <td>{{ beneficiar.telefon }}</td>
-        <td class="d-flex">
-          <button
-            class="btn btn-warning btn-sm me-2"
-            (click)="updateBeneficiar(beneficiar)"
-          >
-            Updateaza
-          </button>
-          <button
-            class="btn btn-danger btn-sm"
-            (click)="deleteConfirm(beneficiar.id!)"
-          >
-            Sterge
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <app-beneficiar-table
+    [beneficiari]="beneficiari"
+    [filteredBeneficiari]="filteredBeneficiari"
+    [sortColumn]="sortColumn"
+    [sortDirection]="sortDirection"
+    [newBeneficiar]="newBeneficiar"
+    [initializeNewBeneficiar]="initializeNewBeneficiar"
+    [isEditing]="isEditing"
+    [currentBeneficiarId]="currentBeneficiarId"
+    [showForm]="showForm"
+    [isSubmitted]="isSubmitted"
+    (showFormChange)="showForm = $event"
+    (updateBeneficiarEvent)="updateBeneficiar($event)"
+  ></app-beneficiar-table>
 </div>
