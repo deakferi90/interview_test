@@ -196,22 +196,6 @@ export class BeneficiariComponent implements OnInit {
     }
   }
 
-  deleteConfirm(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      height: '200px',
-      panelClass: 'centered-dialog',
-    });
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.beneficiarService.deleteBeneficiar(id);
-        this.loadBeneficiari();
-        this.resetForm();
-        this.toastr.success('Beneficiar șters cu succes!');
-      }
-    });
-  }
-
   resetForm() {
     this.newBeneficiar = this.initializeNewBeneficiar();
     this.isEditing = false;
