@@ -185,13 +185,6 @@ export class BeneficiariComponent implements OnInit {
     }
   }
 
-  updateBeneficiar(beneficiar: Beneficiar) {
-    this.showForm = true;
-    this.newBeneficiar = { ...beneficiar };
-    this.isEditing = true;
-    this.currentBeneficiarId = beneficiar.id!;
-  }
-
   updateBeneficiarInList() {
     if (this.currentBeneficiarId !== null) {
       this.beneficiarService.updateBeneficiar({
