@@ -199,14 +199,17 @@
     (keyup)="filterBeneficiari($event)"
   />
   <app-beneficiar-table
-    [initializeNewBeneficiar]="initializeNewBeneficiar"
-    [filteredBeneficiari]="filteredBeneficiari"
     [beneficiari]="beneficiari"
+    [filteredBeneficiari]="filteredBeneficiari"
     [sortColumn]="sortColumn"
     [sortDirection]="sortDirection"
     [newBeneficiar]="newBeneficiar"
+    [initializeNewBeneficiar]="initializeNewBeneficiar"
     [isEditing]="isEditing"
+    [currentBeneficiarId]="currentBeneficiarId"
     [showForm]="showForm"
     [isSubmitted]="isSubmitted"
+    (showFormChange)="showForm = $event"
+    (updateBeneficiarEvent)="updateBeneficiar($event)"
   ></app-beneficiar-table>
 </div>
