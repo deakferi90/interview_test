@@ -6,6 +6,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BeneficiarService } from '../service/beneficiari.service';
 import { ToastrService } from 'ngx-toastr';
 import { BeneficiarTableComponent } from './beneficiar-table/beneficiar-table.component';
+import { BeneficiarFormComponent } from './beneficiar-form/beneficiar-form.component';
+import { Persoana } from './persoana.interface';
 
 @Component({
   selector: 'app-beneficiari',
@@ -18,11 +20,12 @@ import { BeneficiarTableComponent } from './beneficiar-table/beneficiar-table.co
     ReactiveFormsModule,
     MatDialogModule,
     BeneficiarTableComponent,
+    BeneficiarFormComponent,
   ],
 })
 export class BeneficiariComponent implements OnInit {
   beneficiari: Beneficiar[] = [];
-  persoane: any[] | undefined;
+  persoane: Persoana[] | undefined;
   newBeneficiar: Beneficiar = this.initializeNewBeneficiar();
   isEditing: boolean = false;
   isSubmitted = false;
@@ -34,8 +37,7 @@ export class BeneficiariComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private beneficiarService: BeneficiarService,
-    private toastr: ToastrService
+    private beneficiarService: BeneficiarService
   ) {}
 
   ngOnInit(): void {
@@ -60,28 +62,6 @@ export class BeneficiariComponent implements OnInit {
       cui: '',
       conturiIBAN: '',
     };
-  }
-
-  sortTable(column: keyof Beneficiar) {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortDirection = 'asc';
-    }
-    this.sortColumn = column;
-
-    this.filteredBeneficiari.sort((a, b) => {
-      const valueA = a[column] || '';
-      const valueB = b[column] || '';
-
-      const comparison = valueA
-        .toString()
-        .localeCompare(valueB.toString(), undefined, {
-          numeric: true,
-        });
-
-      return this.sortDirection === 'asc' ? comparison : -comparison;
-    });
   }
 
   filterBeneficiari(event: KeyboardEvent) {
@@ -167,22 +147,6 @@ export class BeneficiariComponent implements OnInit {
     }
     const cnpPattern = /^\d{13}$/;
     return cnpPattern.test(cnp);
-  }
-
-  saveBeneficiar() {
-    this.isSubmitted = true;
-    if (this.validateBeneficiar(this.newBeneficiar)) {
-      if (this.isEditing && this.currentBeneficiarId !== null) {
-        this.updateBeneficiarInList();
-        this.toastr.success('Beneficiar actualizat cu succes!');
-      } else {
-        this.newBeneficiar.id = Date.now();
-        this.beneficiarService.addBeneficiar({ ...this.newBeneficiar });
-        this.toastr.success('Beneficiar adăugat cu succes!');
-      }
-      this.loadBeneficiari();
-      this.resetForm();
-    }
   }
 
   updateBeneficiar(beneficiar: Beneficiar) {
