@@ -145,7 +145,7 @@ export class BeneficiarFormComponent {
   }
 
   resetForm() {
-    this.isEditing = false;
+    this.isEditing = !this.isEditing;
     this.showForm = false;
     this.newBeneficiar = this.initializeNewBeneficiar();
     this.isSubmitted = false;

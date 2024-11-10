@@ -90,6 +90,7 @@ export class BeneficiarTableComponent implements OnInit {
     this.currentBeneficiarId = beneficiar.id!;
     this.showFormChange.emit(this.showForm);
     this.updateBeneficiarEvent.emit(beneficiar);
+    this.isEditing = true;
     const index = this.beneficiari.findIndex(
       (b) => b.id === this.currentBeneficiarId
     );
@@ -101,7 +102,7 @@ export class BeneficiarTableComponent implements OnInit {
 
   resetForm() {
     this.newBeneficiar = this.initializeNewBeneficiar();
-    this.isEditing = false;
+    this.isEditing = true;
     this.currentBeneficiarId = null;
     this.filteredBeneficiari = [...this.beneficiari];
     this.showForm = !this.showForm;
