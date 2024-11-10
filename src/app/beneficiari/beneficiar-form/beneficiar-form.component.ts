@@ -1,10 +1,18 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  OnChanges,
+  SimpleChanges,
+  Input,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { Beneficiar } from '../beneficiar.model';
 import { ToastrService } from 'ngx-toastr';
 import { BeneficiarService } from '../../service/beneficiari.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Persoana } from '../persoana.interface';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-beneficiar-form',
@@ -22,9 +30,12 @@ export class BeneficiarFormComponent {
   @Input() isEditing: boolean = true;
   @Input() persoane!: Persoana[] | undefined;
   @Input() newBeneficiar!: Beneficiar;
+  @Output() beneficiarAdded = new EventEmitter<Beneficiar>();
+
   constructor(
     private toastr: ToastrService,
-    private beneficiarService: BeneficiarService
+    private beneficiarService: BeneficiarService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   initializeNewBeneficiar(): Beneficiar {
@@ -112,8 +123,11 @@ export class BeneficiarFormComponent {
         this.beneficiarService.addBeneficiar({ ...this.newBeneficiar });
         this.toastr.success('Beneficiar adăugat cu succes!');
       }
+      this.beneficiarAdded.emit(this.newBeneficiar);
       this.loadBeneficiari();
       this.resetForm();
+
+      this.cdr.detectChanges();
     }
   }
 
@@ -124,16 +138,15 @@ export class BeneficiarFormComponent {
         id: this.currentBeneficiarId,
       });
       this.loadBeneficiari();
+      this.cdr.detectChanges();
     }
   }
-
   resetForm() {
-    this.newBeneficiar = this.initializeNewBeneficiar();
     this.isEditing = false;
-    this.currentBeneficiarId = null;
-    this.filteredBeneficiari = [...this.beneficiari];
-    this.showForm = !this.showForm;
-    this.isSubmitted = false;
+    this.showForm = false;
+    this.newBeneficiar = this.initializeNewBeneficiar();
+    this.isSubmitted = true;
+    this.cdr.detectChanges();
   }
 
   loadBeneficiari() {

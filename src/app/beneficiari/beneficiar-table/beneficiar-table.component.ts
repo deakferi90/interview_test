@@ -90,12 +90,13 @@ export class BeneficiarTableComponent implements OnInit {
     this.currentBeneficiarId = beneficiar.id!;
     this.showFormChange.emit(this.showForm);
     this.updateBeneficiarEvent.emit(beneficiar);
+    const index = this.beneficiari.findIndex(
+      (b) => b.id === this.currentBeneficiarId
+    );
+    if (index !== -1) {
+      this.beneficiari[index] = { ...this.newBeneficiar };
+    }
     this.cdr.detectChanges();
-  }
-
-  addForm() {
-    this.showForm = !this.showForm;
-    this.showFormChange.emit(this.showForm);
   }
 
   resetForm() {
