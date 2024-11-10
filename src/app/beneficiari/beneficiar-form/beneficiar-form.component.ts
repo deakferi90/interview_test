@@ -29,8 +29,9 @@ export class BeneficiarFormComponent {
   @Input() isSubmitted!: boolean;
   @Input() isEditing: boolean = true;
   @Input() persoane!: Persoana[] | undefined;
-  @Input() newBeneficiar!: Beneficiar;
+  @Input() newBeneficiar: Beneficiar = this.initializeNewBeneficiar();
   @Output() beneficiarAdded = new EventEmitter<Beneficiar>();
+  @Output() showFormChange = new EventEmitter<boolean>();
 
   constructor(
     private toastr: ToastrService,
@@ -128,6 +129,7 @@ export class BeneficiarFormComponent {
       this.resetForm();
 
       this.cdr.detectChanges();
+      this.showFormChange.emit(this.showForm);
     }
   }
 
@@ -141,12 +143,14 @@ export class BeneficiarFormComponent {
       this.cdr.detectChanges();
     }
   }
+
   resetForm() {
     this.isEditing = false;
     this.showForm = false;
     this.newBeneficiar = this.initializeNewBeneficiar();
-    this.isSubmitted = true;
+    this.isSubmitted = false;
     this.cdr.detectChanges();
+    this.showFormChange.emit(this.showForm);
   }
 
   loadBeneficiari() {

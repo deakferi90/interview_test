@@ -14,6 +14,7 @@
     [isEditing]="isEditing"
     [newBeneficiar]="newBeneficiar"
     (beneficiarAdded)="loadBeneficiari()"
+    (showFormChange)="showForm = $event"
   ></app-beneficiar-form>
   <div class="info-msg">*Trebuie completate pentru a trimite form-ul</div>
   <h3 class="mt-4">Beneficiari Salvați</h3>
